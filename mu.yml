@@ -1,0 +1,16 @@
+---
+service:
+  desiredCount: 3
+  maxSize: 6
+  port: 3000
+  priority: 50
+  pathPatterns:
+  - /*
+  networkMode: awsvpc
+parameters:
+  'mu-service-ecsdemo-nodejs-acceptance':
+    ElbHttpListenerArn:
+        mu-loadbalancer-acceptance-BackendLBHttpListenerArn
+  'mu-service-ecsdemo-nodejs-production':
+    ElbHttpListenerArn:
+        mu-loadbalancer-production-BackendLBHttpListenerArn
