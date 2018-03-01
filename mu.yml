@@ -15,7 +15,7 @@ service:
 parameters:
   'mu-service-ecsdemo-nodejs-acceptance':
     ElbHttpListenerArn:
-        mu-loadbalancer-acceptance-BackendLBHttpListenerArn
+        ${env:MU_NAMESPACE}-loadbalancer-acceptance-BackendLBHttpListenerArn
   'mu-service-ecsdemo-nodejs-production':
     ElbHttpListenerArn:
-        mu-loadbalancer-production-BackendLBHttpListenerArn
+        ${env:MU_NAMESPACE}-loadbalancer-production-BackendLBHttpListenerArn
