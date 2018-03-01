@@ -13,9 +13,9 @@ service:
   - /*
   networkMode: awsvpc
 parameters:
-  'mu-service-ecsdemo-nodejs-acceptance':
+  '${env:MU_NAMESPACE}-service-ecsdemo-nodejs-acceptance':
     ElbHttpListenerArn:
         ${env:MU_NAMESPACE}-loadbalancer-acceptance-BackendLBHttpListenerArn
-  'mu-service-ecsdemo-nodejs-production':
+  '${env:MU_NAMESPACE}-service-ecsdemo-nodejs-production':
     ElbHttpListenerArn:
         ${env:MU_NAMESPACE}-loadbalancer-production-BackendLBHttpListenerArn
