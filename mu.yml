@@ -3,14 +3,4 @@ service:
   desiredCount: 3
   maxSize: 6
   port: 3000
-  priority: 50
-  pathPatterns:
-  - /*
-  networkMode: awsvpc
-parameters:
-  '${env:MU_NAMESPACE}-service-ecsdemo-nodejs-acceptance':
-    ElbHttpListenerArn:
-        ${env:MU_NAMESPACE}-loadbalancer-acceptance-BackendLBHttpListenerArn
-  '${env:MU_NAMESPACE}-service-ecsdemo-nodejs-production':
-    ElbHttpListenerArn:
-        ${env:MU_NAMESPACE}-loadbalancer-production-BackendLBHttpListenerArn
+  discoveryTTL: 5
