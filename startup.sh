@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 set -x
 
-IP=$(ip route show |grep -o src.* |cut -f2 -d" ")
+IP=$(hostname -i)
 NETWORK=$(echo ${IP} | cut -f3 -d.)
 
 case "${NETWORK}" in
@@ -35,6 +35,7 @@ if [[ ${zone} == "unknown" ]]; then
 fi
 
 export CODE_HASH="$(cat code_hash.txt)"
+export IP
 export AZ="${IP} in AZ-${zone}"
 
 # exec container command
