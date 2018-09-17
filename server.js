@@ -34,13 +34,13 @@ app.use('/health', require('express-healthcheck')());
 // label the AZ based on which subnet we are on
 switch (network) {
   case '10.0.100.0':
-    var az = '1a';
+    var az = 'a';
     break;
   case '10.0.101.0':
-    var az = '1b';
+    var az = 'b';
     break;
   case '10.0.102.0':
-    var az = '1c';
+    var az = 'c';
     break;
   default:
     var az = 'unknown'
