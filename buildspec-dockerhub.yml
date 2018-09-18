@@ -12,7 +12,6 @@ phases:
       - export ACCOUNT=$(echo $CODEBUILD_BUILD_ARN |cut -f5 -d:)
       - export PROJECT_NAME=$(echo $CODEBUILD_BUILD_ID |sed -e 's/.*pipeline-\(.*\)-artifact.*/\1/'
       - export IMAGE_REPO_NAME="${docker_hub_username}/$PROJECT_NAME"
-ecsdemo-frontend)
       - echo '***** This is the current env:'
       - printenv
   pre_build:
