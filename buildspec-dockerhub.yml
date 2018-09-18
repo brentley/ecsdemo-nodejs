@@ -8,10 +8,9 @@ env:
 phases:
   install:
     commands:
-      - export IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - export IMAGE_TAG=$(echo $CODEBUILD_SOURCE_VERSION | cut -c 1-7)
       - export ACCOUNT=$(echo $CODEBUILD_BUILD_ARN |cut -f5 -d:)
       - export PROJECT_NAME=$(basename $PWD)
-      - export IMAGE_REPO_NAME="${DOCKER_HUB_USERNAME}/$PROJECT_NAME"
       - echo '***** This is the current env:'
       - printenv
   pre_build:
@@ -23,14 +22,14 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - echo $IMAGE_TAG > code_hash.txt
-      - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
+      - docker build -t $DOCKER_HUB_USERNAME/$PROJECT_NAME:$IMAGE_TAG .
       # - docker build -t myimage .
   post_build:
     commands:
       - printf '[{"name":"example-backend","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push $IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker push $DOCKER_HUB_USERNAME/$PROJECT_NAME:$IMAGE_TAG
       # - docker pull anchore/cli
       # - docker run -d -v $(pwd):/source-dir -v /var/run/docker.sock:/var/run/docker.sock --name anchore anchore/cli:latest
       # - docker exec anchore anchore feeds sync
