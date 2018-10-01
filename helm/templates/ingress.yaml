@@ -1,0 +1,8 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ecsdemo-nodejs
+spec:
+  backend:
+    serviceName: ecsdemo-nodejs
+    servicePort: 80
