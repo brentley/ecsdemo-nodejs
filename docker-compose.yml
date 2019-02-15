@@ -1,0 +1,12 @@
+version: '3'
+services:
+  ecsdemo-frontend:
+    image: brentley/ecsdemo-nodejs
+    ports:
+      - "3000:3000"
+    logging:
+      driver: awslogs
+      options: 
+        awslogs-group: ecsdemo-nodejs
+        awslogs-region: ap-southeast-1
+        awslogs-stream-prefix: ecsdemo-nodejs
