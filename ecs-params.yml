@@ -9,11 +9,11 @@ run_params:
   network_configuration:
     awsvpc_configuration:
       subnets:
-        - "subnet-07105dbab6f04ae7f"
-        - "subnet-086d522cc6c273ac1"
-        - "subnet-0519235cdff9e7013"
+        - "subnet-0412684667a7a5147"
+        - "subnet-08467586f86110cea"
+        - "subnet-0afe24995d24d9e0f"
       security_groups:
-        - "sg-0e5cd18b6fbb61668"
+        - "sg-03eef5d8f0eefa149"
       assign_public_ip: DISABLED
   service_discovery:
     container_name: ecsdemo-nodejs

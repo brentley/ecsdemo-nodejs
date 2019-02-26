@@ -1,6 +1,6 @@
 version: '3'
 services:
-  ecsdemo-frontend:
+  ecsdemo-nodejs:
     image: brentley/ecsdemo-nodejs
     ports:
       - "3000:3000"
