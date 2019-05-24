@@ -5,6 +5,7 @@ metadata:
 spec:
   selector:
     app: ecsdemo-nodejs
+  type: LoadBalancer
   ports:
    -  protocol: TCP
       port: 80
