@@ -19,6 +19,8 @@ spec:
     metadata:
       labels:
         app: ecsdemo-nodejs
+      annotations:
+        iam.amazonaws.com/role: arn:aws:iam::651426287273:instance-profile/eksworkshop-admin
     spec:
       containers:
       - image: brentley/ecsdemo-nodejs:latest
