@@ -1,1 +1,4 @@
 node_modules
+*env
+cdk/cdk.out
+cdk.context.json
