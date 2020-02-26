@@ -63,7 +63,10 @@ class NodejsService(core.Stack):
         self.container = self.fargate_task_def.add_container(
             "NodeServiceContainerDef",
             image=aws_ecs.ContainerImage.from_registry("brentley/ecsdemo-nodejs"),
-            memory_reservation_mib=512
+            memory_reservation_mib=512,
+            logging=aws_ecs.LogDriver.aws_logs(
+                stream_prefix='ecsworkshop-nodejs'
+            )
         )
         
         self.container.add_port_mappings(
