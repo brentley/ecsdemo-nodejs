@@ -5,6 +5,7 @@ from aws_cdk import (
     aws_ec2,
     aws_ecs,
     aws_ecs_patterns,
+    aws_iam,
     aws_servicediscovery,
     core,
 )
@@ -14,7 +15,7 @@ from os import getenv
 
 # Creating a construct that will populate the required objects created in the platform repo such as vpc, ecs cluster, and service discovery namespace
 class BasePlatform(core.Construct):
-    
+
     def __init__(self, scope: core.Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
         self.environment_name = 'ecsworkshop'
@@ -24,14 +25,14 @@ class BasePlatform(core.Construct):
             self, "VPC",
             vpc_name='{}-base/BaseVPC'.format(self.environment_name)
         )
-        
+
         self.sd_namespace = aws_servicediscovery.PrivateDnsNamespace.from_private_dns_namespace_attributes(
             self, "SDNamespace",
             namespace_name=core.Fn.import_value('NSNAME'),
             namespace_arn=core.Fn.import_value('NSARN'),
             namespace_id=core.Fn.import_value('NSID')
         )
-        
+
         self.ecs_cluster = aws_ecs.Cluster.from_cluster_attributes(
             self, "ECSCluster",
             cluster_name=core.Fn.import_value('ECSClusterName'),
@@ -39,15 +40,15 @@ class BasePlatform(core.Construct):
             vpc=self.vpc,
             default_cloud_map_namespace=self.sd_namespace
         )
-        
+
         self.services_sec_grp = aws_ec2.SecurityGroup.from_security_group_id(
             self, "ServicesSecGrp",
             security_group_id=core.Fn.import_value('ServicesSecGrp')
         )
-        
+
 
 class NodejsService(core.Stack):
-    
+
     def __init__(self, scope: core.Stack, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
 
@@ -59,16 +60,19 @@ class NodejsService(core.Stack):
             cpu='256',
             memory_mib='512',
         )
-        
+
         self.container = self.fargate_task_def.add_container(
             "NodeServiceContainerDef",
-            image=aws_ecs.ContainerImage.from_registry("brentley/ecsdemo-nodejs"),
+            image=aws_ecs.ContainerImage.from_registry("brentley/ecsdemo-nodejs:cdk"),
             memory_reservation_mib=512,
             logging=aws_ecs.LogDriver.aws_logs(
                 stream_prefix='ecsworkshop-nodejs'
-            )
+            ),
+            environment={
+                "REGION": getenv('AWS_DEFAULT_REGION')
+            },
         )
-        
+
         self.container.add_port_mappings(
             aws_ecs.PortMapping(
                 container_port=3000
@@ -87,6 +91,12 @@ class NodejsService(core.Stack):
             )
         )
 
+        self.fargate_task_def.add_to_task_role_policy(
+            aws_iam.PolicyStatement(
+                actions=['ec2:DescribeSubnets'],
+                resources=['*']
+            )
+        )
 
 _env = core.Environment(account=getenv('AWS_ACCOUNT_ID'), region=getenv('AWS_DEFAULT_REGION'))
 environment = "ecsworkshop"
