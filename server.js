@@ -28,6 +28,22 @@ app.get('/', function (req, res) {
   // res.send(`Hello World! from ${ipaddress} in AZ-${az} which has been up for ` + process.uptime() + 'ms');
 });
 
+app.get('/nodejs', function (req, res) {
+  res.set({
+  'Content-Type': 'text/plain'
+})
+  res.send(`Node.js backend: Hello! from ${message} commit ${code_hash}`);
+  // res.send(`Hello World! from ${ipaddress} in AZ-${az} which has been up for ` + process.uptime() + 'ms');
+});
+
+app.get('/nodejs/api', function (req, res) {
+  res.send({
+    from: 'Node.js backend',
+    message: message,
+    commit: code_hash
+  });
+});
+
 // health route - variable subst is more pythonic just as an example
 var server = app.listen(3000, function() {
   var port = server.address().port;
