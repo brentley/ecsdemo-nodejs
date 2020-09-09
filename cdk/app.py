@@ -49,44 +49,6 @@ class BasePlatform(core.Construct):
         
 class NodejsService(core.Stack):
     
-    def nodejsTempEc2StressTool(self):
-        
-        # AMI 
-        amzn_linux = aws_ec2.MachineImage.latest_amazon_linux(
-            generation=aws_ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
-            edition=aws_ec2.AmazonLinuxEdition.STANDARD,
-            virtualization=aws_ec2.AmazonLinuxVirt.HVM,
-            storage=aws_ec2.AmazonLinuxStorage.GENERAL_PURPOSE
-            )
-
-        # Instance Role and SSM Managed Policy
-        role = aws_iam.Role(self, "InstanceSSM", assumed_by=aws_iam.ServicePrincipal("ec2.amazonaws.com"))
-
-        role.add_managed_policy(aws_iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AmazonEC2RoleforSSM"))
-        
-
-        #reading user data to install siege
-        with open("stresstool_user_data.sh") as f:
-            user_data = f.read()
-    
-        # Instance
-        instance = aws_ec2.Instance(self, "Instance",
-            instance_name="{}-nodejs-stresstool".format(environment),
-            instance_type=aws_ec2.InstanceType("t3.medium"),
-            machine_image=amzn_linux,
-            vpc = self.base_platform.vpc,
-            role = role,
-            vpc_subnets=aws_ec2.SubnetSelection(subnet_type=aws_ec2.SubnetType.PRIVATE),
-            user_data=aws_ec2.UserData.custom(user_data),
-            security_group=self.base_platform.services_sec_grp,
-            )
-        
-        # Adding output to get the instance id and the private ip
-        core.CfnOutput(self, "StressToolEc2Id",value=instance.instance_id)
-        core.CfnOutput(self, "StressToolEc2Ip",value=instance.instance_private_ip)
-
-
-
     def __init__(self, scope: core.Stack, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
 
@@ -149,11 +111,6 @@ class NodejsService(core.Stack):
         #     scale_in_cooldown=core.Duration.seconds(30),
         #     scale_out_cooldown=core.Duration.seconds(30)
         # )
-        
-        # self.stressToolEc2 = self.nodejsTempEc2StressTool()
-        
-    
-    
 
 _env = core.Environment(account=getenv('AWS_ACCOUNT_ID'), region=getenv('AWS_DEFAULT_REGION'))
 environment = "ecsworkshop"
