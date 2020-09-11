@@ -46,9 +46,9 @@ class BasePlatform(core.Construct):
             security_group_id=core.Fn.import_value('ServicesSecGrp')
         )
 
-
+        
 class NodejsService(core.Stack):
-
+    
     def __init__(self, scope: core.Stack, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
 
@@ -81,6 +81,7 @@ class NodejsService(core.Stack):
 
         self.fargate_service = aws_ecs.FargateService(
             self, "NodejsFargateService",
+            service_name='ecsdemo-nodejs',
             task_definition=self.fargate_task_def,
             cluster=self.base_platform.ecs_cluster,
             security_group=self.base_platform.services_sec_grp,
@@ -97,6 +98,19 @@ class NodejsService(core.Stack):
                 resources=['*']
             )
         )
+        
+        # Enable Service Autoscaling
+        # self.autoscale = self.fargate_service.auto_scale_task_count(
+        #     min_capacity=1,
+        #     max_capacity=10
+        # )
+        
+        # self.autoscale.scale_on_cpu_utilization(
+        #     "CPUAutoscaling",
+        #     target_utilization_percent=50,
+        #     scale_in_cooldown=core.Duration.seconds(30),
+        #     scale_out_cooldown=core.Duration.seconds(30)
+        # )
 
 _env = core.Environment(account=getenv('AWS_ACCOUNT_ID'), region=getenv('AWS_DEFAULT_REGION'))
 environment = "ecsworkshop"
