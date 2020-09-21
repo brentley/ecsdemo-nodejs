@@ -10,7 +10,8 @@ ENV NODE_ENV ${NODE}
 # copy package info early to install npms and delete npm command
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN apk -U add curl jq bash nodejs nodejs-npm && \
+RUN apk -U add curl jq bash nodejs nodejs-npm python3 py3-pip && \
+  pip3 install awscli netaddr && \
   npm install && apk del --purge nodejs-npm && \
   rm -rvf /var/cache/* /root/.npm /tmp/*
 
