@@ -76,9 +76,16 @@ if [[ ${zone} == "unknown" ]]; then
   zone=$(curl -m2 -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.availabilityZone' | grep -o .$)
 fi
 
-# kubernetes sets routes differently -- so we will discover our IP differently
-if [[ ${IP} == "" ]]; then
-  IP=$(hostname -i)
+# Still no luck? Perhaps we're running fargate!
+if [[ -z ${zone} ]]; then
+  ip_addr=$(curl -m2 -s ${ECS_CONTAINER_METADATA_URI} | jq -r '.Networks[].IPv4Addresses[]')
+  declare -a subnets=( $(aws ec2 describe-subnets | jq -r .Subnets[].CidrBlock| sed ':a;N;$!ba;s/\n/ /g') )
+  for sub in "${subnets[@]}"; do
+    ip_match=$(echo -e "from netaddr import IPNetwork, IPAddress\nif IPAddress('$ip_addr') in IPNetwork('$sub'):\n    print('true')" | python3)
+    if [[ $ip_match == "true" ]];then
+      zone=$(aws ec2 describe-subnets | jq -r --arg sub "$sub" '.Subnets[] | select(.CidrBlock==$sub) | .AvailabilityZone' | grep -o .$)
+    fi
+  done
 fi
 
 export CODE_HASH="$(cat code_hash.txt)"
